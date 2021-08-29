@@ -43,6 +43,15 @@ public class OpenedCourse {
         this.academicYear = academicYear;
     }
 
+    public OpenedCourse(Long id, Course course, Integer academicYear) {
+        this.id = id;
+        this.course = course;
+        this.academicYear = academicYear;
+    }
+
+    public OpenedCourse() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

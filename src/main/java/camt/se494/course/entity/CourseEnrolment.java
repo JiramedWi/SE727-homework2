@@ -50,6 +50,15 @@ public class CourseEnrolment  implements Comparable{
         this.grade = grade;
     }
 
+    public CourseEnrolment(Long id, Student student, OpenedCourse openedCourse, String grade) {
+        this.id = id;
+        this.student = student;
+        this.openedCourse = openedCourse;
+        this.grade = grade;
+    }
+
+    public CourseEnrolment() {
+    }
 
     @Override
     public boolean equals(Object o) {

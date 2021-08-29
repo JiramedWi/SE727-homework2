@@ -45,4 +45,14 @@ public class CourseReport {
     public void setTotalStudent(double totalStudent) {
         this.totalStudent = totalStudent;
     }
+
+//    public CourseReport(Course course, List<Student> students, double averageGpa, double totalStudent) {
+//        this.course = course;
+//        this.students = students;
+//        this.averageGpa = averageGpa;
+//        this.totalStudent = totalStudent;
+//    }
+
+//    public CourseReport() {
+//    }
 }
