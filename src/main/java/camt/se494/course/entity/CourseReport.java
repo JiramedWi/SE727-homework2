@@ -46,13 +46,13 @@ public class CourseReport {
         this.totalStudent = totalStudent;
     }
 
-//    public CourseReport(Course course, List<Student> students, double averageGpa, double totalStudent) {
-//        this.course = course;
-//        this.students = students;
-//        this.averageGpa = averageGpa;
-//        this.totalStudent = totalStudent;
-//    }
+    public CourseReport(Course course, List<Student> students, double averageGpa, double totalStudent) {
+        this.course = course;
+        this.students = students;
+        this.averageGpa = averageGpa;
+        this.totalStudent = totalStudent;
+    }
 
-//    public CourseReport() {
-//    }
+    public CourseReport() {
+    }
 }
