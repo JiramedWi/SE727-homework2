@@ -41,6 +41,15 @@ public class Course {
         this.courseName = courseName;
     }
 
+    public Course(Long id, String courseId, String courseName) {
+        this.id = id;
+        this.courseId = courseId;
+        this.courseName = courseName;
+    }
+
+    public Course() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

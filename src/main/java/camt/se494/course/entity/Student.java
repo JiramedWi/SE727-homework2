@@ -32,6 +32,16 @@ public class Student {
 
     }
 
+    public Student(Long id, String studentId, String name, List<CourseEnrolment> courseEnrolments) {
+        this.id = id;
+        this.studentId = studentId;
+        this.name = name;
+        this.courseEnrolments = courseEnrolments;
+    }
+
+    public Student() {
+    }
+
     @Override
     public int hashCode() {
         int result = studentId != null ? studentId.hashCode() : 0;
