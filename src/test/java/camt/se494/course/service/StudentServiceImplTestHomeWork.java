@@ -169,6 +169,7 @@ class StudentServiceImplTestHomeWork {
     }
 
     @Test
+    //SOMETHING I MISS UNDERSTAND
     void getStudentGpaAcademicYear() {
 
         //Perfect case
@@ -182,6 +183,7 @@ class StudentServiceImplTestHomeWork {
     }
 
     @Test
+    //GIVE UP
     void getStudentReport() {
         StudentServiceImpl studentService = new StudentServiceImpl();
         studentService.setGradeMatcher(gradeMatcher);
