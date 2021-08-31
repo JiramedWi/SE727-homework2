@@ -1,8 +1,12 @@
 package camt.se494.course.service;
 
+import camt.se494.course.dao.CourseEnrolmentDao;
+import camt.se494.course.dao.OpenedCourseDao;
 import camt.se494.course.dao.StudentDao;
 import camt.se494.course.entity.CourseEnrolment;
+import camt.se494.course.entity.OpenedCourse;
 import camt.se494.course.entity.Student;
+import camt.se494.course.entity.StudentReport;
 import camt.se494.course.exception.UnAcceptGradeException;
 import camt.se494.course.service.util.GradeMatcher;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +16,8 @@ import org.mockito.InOrder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -20,12 +26,17 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.number.IsCloseTo.*;
 
 
+
+
 class StudentServiceImplTestHomeWork {
     Student student1 = null;
     Student student2 = null;
     Student student3 = null;
     StudentDao studentDao = null;
     GradeMatcher gradeMatcher = null;
+    CourseEnrolmentDao courseEnrolmentDao = null;
+    StudentReport studentReport = null;
+    List<CourseEnrolment> courseEnrolmentListYear = new ArrayList<>();
 
     @BeforeEach
     void initstudent() {
@@ -39,6 +50,7 @@ class StudentServiceImplTestHomeWork {
         when(gradeMatcher.getGradeScore("D+")).thenReturn(1.50);
         when(gradeMatcher.getGradeScore("D")).thenReturn(1.00);
         when(gradeMatcher.getGradeScore("F")).thenReturn(0.00);
+
 
         //set 1st student
         student1 = mock(Student.class);
@@ -82,50 +94,73 @@ class StudentServiceImplTestHomeWork {
         List<CourseEnrolment> courseEnrolmentList2 = new ArrayList<>();
         CourseEnrolment courseEnrolment5 = mock(CourseEnrolment.class);
         when(courseEnrolment5.getGrade()).thenReturn("B");
-        when(courseEnrolment5.getOpenedCourse().getAcademicYear()).thenReturn(2020);
         courseEnrolmentList2.add(courseEnrolment5);
         CourseEnrolment courseEnrolment6 = mock(CourseEnrolment.class);
         when(courseEnrolment6.getGrade()).thenReturn("C");
-        when(courseEnrolment6.getOpenedCourse().getAcademicYear()).thenReturn(2020);
         courseEnrolmentList2.add(courseEnrolment6);
         CourseEnrolment courseEnrolment7 = mock(CourseEnrolment.class);
         when(courseEnrolment7.getGrade()).thenReturn("D");
-        when(courseEnrolment7.getOpenedCourse().getAcademicYear()).thenReturn(2021);
-        courseEnrolmentList2.add(courseEnrolment6);
+        courseEnrolmentList2.add(courseEnrolment7);
         //add course to 3rd student
         when(student3.getCourseEnrolments()).thenReturn(courseEnrolmentList2);
-        //Set list course with year
 
-        //GetopenedCoursethenreturnlistcourse
-        //
+        //Set list of student
         studentDao = mock(StudentDao.class);
+        List<Student> students = new ArrayList<>();
+        students.add(student1);
+        students.add(student2);
+        students.add(student3);
+        when(studentDao.getStudent()).thenReturn(students);
+
+        // Set list course with year for student 3
+        courseEnrolmentDao = mock(CourseEnrolmentDao.class);
+        List<CourseEnrolment> courseEnrolmentList2020 = new ArrayList<>();
+        courseEnrolmentList2020.add(courseEnrolment5);
+        courseEnrolmentList2020.add(courseEnrolment6);
+        List<CourseEnrolment> courseEnrolmentList2021 = new ArrayList<>();
+        courseEnrolmentList2021.add(courseEnrolment7);
+        courseEnrolmentListYear.add(courseEnrolment5);
+        courseEnrolmentListYear.add(courseEnrolment6);
+        courseEnrolmentListYear.add(courseEnrolment7);
+        when(courseEnrolmentDao.getCourseEnrolments(2020)).thenReturn(courseEnrolmentList2020);
+        when(courseEnrolmentDao.getCourseEnrolments(2021)).thenReturn(courseEnrolmentList2021);
+        OpenedCourse openedCourse1 = mock(OpenedCourse.class);
+        OpenedCourse openedCourse2 = mock(OpenedCourse.class);
+        when(openedCourse1.getAcademicYear()).thenReturn(2020);
+        when(openedCourse2.getAcademicYear()).thenReturn(2021);
+        when(courseEnrolment5.getOpenedCourse()).thenReturn(openedCourse1);
+        when(courseEnrolment6.getOpenedCourse()).thenReturn(openedCourse1);
+        when(courseEnrolment7.getOpenedCourse()).thenReturn(openedCourse2);
+
+        studentReport = mock(StudentReport.class);
+
+    }
+    @Test
+    void getStudent(){
+        StudentServiceImpl studentService = new StudentServiceImpl();
+        studentService.setStudentDao(studentDao);
+        assertThat(studentService.getStudent(),hasItems(student1,student2,student3));
+
+        //seem like bug
+        assertThat(studentService.getStudent("50"),hasItems(student1));
     }
 
     @Test
     void getStudentGradeLowerThan() {
-        List<Student> students = new ArrayList<>();
-        students.add(student1);
-        students.add(student2);
-        students.add(student3);
-        when(studentDao.getStudent()).thenReturn(students);
-//        verify(studentDao,times(1)).getStudent();
         StudentServiceImpl studentService = new StudentServiceImpl();
         studentService.setStudentDao(studentDao);
         studentService.setGradeMatcher(gradeMatcher);
-        assertThat(studentService.getStudentGradeGreaterThan(2.00),hasItem(student1));
+        assertThat(studentService.getStudentGradeGreaterThan(2.00), hasItem(student1));
+
     }
 
     @Test
     void getStudentGradeGreaterThan() {
-        List<Student> students = new ArrayList<>();
-        students.add(student1);
-        students.add(student2);
-        students.add(student3);
-        when(studentDao.getStudent()).thenReturn(students);
-        verify(studentDao.getStudent());
+
         StudentServiceImpl studentService = new StudentServiceImpl();
+        studentService.setStudentDao(studentDao);
         studentService.setGradeMatcher(gradeMatcher);
-        assertThat(studentService.getStudentGradeGreaterThan(2.50),hasItem(student3));
+        assertThat(studentService.getStudentGradeLowerThan(2.50), hasItem(student3));
     }
 
     @Test
@@ -176,25 +211,39 @@ class StudentServiceImplTestHomeWork {
     }
 
     @Test
-    //SOMETHING I MISS UNDERSTAND
+        //DONE
     void getStudentGpaAcademicYear() {
 
         //Perfect case
         StudentServiceImpl studentService = new StudentServiceImpl();
         studentService.setGradeMatcher(gradeMatcher);
+        studentService.setStudentDao(studentDao);
         assertThat(studentService.getStudentGpa(student3, 2020),
                 is(closeTo(2.5, 0.001)));
+        assertThat(studentService.getStudentGpa(student3, 2021),
+                is(closeTo(1, 0.001)));
 
-        verify(student3).getCourseEnrolments();
-        verify(studentService.getStudentGpa(student3, 2020));
+        verify(student3, times(2)).getCourseEnrolments();
     }
 
     @Test
-    //GIVE UP
+        //GIVE UP
     void getStudentReport() {
         StudentServiceImpl studentService = new StudentServiceImpl();
         studentService.setGradeMatcher(gradeMatcher);
-//        assertThat(studentService.getStudentReport(student1),hasItem());
+        studentService.setCourseEnrolmentDao(courseEnrolmentDao);
+        when(courseEnrolmentDao.getCourseEnrolments(student3)).thenReturn(courseEnrolmentListYear);
+        Map<Integer,List<CourseEnrolment>> enrolmenMap = new TreeMap<>();
+        Map<Integer,Double> gpaMap = new TreeMap<>();
+        assertThat(studentService.getStudentReport(student3),is(new StudentReport(student3,enrolmenMap,gpaMap)));
     }
 
+    @Test
+    void getRegisterYear() {
+        StudentServiceImpl studentService = new StudentServiceImpl();
+        studentService.setGradeMatcher(gradeMatcher);
+        studentService.setCourseEnrolmentDao(courseEnrolmentDao);
+        studentService.setStudentDao(studentDao);
+        assertThat(studentService.getRegisterYear(courseEnrolmentListYear),hasItems());
+    }
 }
