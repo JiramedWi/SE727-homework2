@@ -10,6 +10,15 @@ public class StudentReport {
     Map<Integer,List<CourseEnrolment>> enrolmentMap = new TreeMap<>();
     Map<Integer,Double> gpaMap = new TreeMap<>();
 
+    public StudentReport(Student student, Map<Integer, List<CourseEnrolment>> enrolmentMap, Map<Integer, Double> gpaMap) {
+        this.student = student;
+        this.enrolmentMap = enrolmentMap;
+        this.gpaMap = gpaMap;
+    }
+
+    public StudentReport() {
+    }
+
     public Student getStudent() {
         return student;
     }
