@@ -25,8 +25,6 @@ class StudentServiceImplTestHomeWork {
     Student student2 = null;
     Student student3 = null;
     StudentDao studentDao = null;
-    //    CourseDao courseDao = null;
-//    OpenedCourseDao openedCourseDao = null;
     GradeMatcher gradeMatcher = null;
 
     @BeforeEach
@@ -84,15 +82,23 @@ class StudentServiceImplTestHomeWork {
         List<CourseEnrolment> courseEnrolmentList2 = new ArrayList<>();
         CourseEnrolment courseEnrolment5 = mock(CourseEnrolment.class);
         when(courseEnrolment5.getGrade()).thenReturn("B");
-//        when(courseEnrolment5.getOpenedCourse().getAcademicYear()).thenReturn(2020);
+        when(courseEnrolment5.getOpenedCourse().getAcademicYear()).thenReturn(2020);
+        courseEnrolmentList2.add(courseEnrolment5);
         CourseEnrolment courseEnrolment6 = mock(CourseEnrolment.class);
         when(courseEnrolment6.getGrade()).thenReturn("C");
-//        when(courseEnrolment6.getOpenedCourse().getAcademicYear()).thenReturn(2020);
+        when(courseEnrolment6.getOpenedCourse().getAcademicYear()).thenReturn(2020);
+        courseEnrolmentList2.add(courseEnrolment6);
         CourseEnrolment courseEnrolment7 = mock(CourseEnrolment.class);
         when(courseEnrolment7.getGrade()).thenReturn("D");
-//        when(courseEnrolment7.getOpenedCourse().getAcademicYear()).thenReturn(2021);
+        when(courseEnrolment7.getOpenedCourse().getAcademicYear()).thenReturn(2021);
+        courseEnrolmentList2.add(courseEnrolment6);
         //add course to 3rd student
         when(student3.getCourseEnrolments()).thenReturn(courseEnrolmentList2);
+        //Set list course with year
+
+        //GetopenedCoursethenreturnlistcourse
+        //
+        studentDao = mock(StudentDao.class);
     }
 
     @Test
@@ -102,8 +108,9 @@ class StudentServiceImplTestHomeWork {
         students.add(student2);
         students.add(student3);
         when(studentDao.getStudent()).thenReturn(students);
-        verify(studentDao.getStudent());
+//        verify(studentDao,times(1)).getStudent();
         StudentServiceImpl studentService = new StudentServiceImpl();
+        studentService.setStudentDao(studentDao);
         studentService.setGradeMatcher(gradeMatcher);
         assertThat(studentService.getStudentGradeGreaterThan(2.00),hasItem(student1));
     }
